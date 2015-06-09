@@ -127,6 +127,7 @@ class interlink {
                 $this->payload = json_encode($payload);
                 $this->jsonSize = strlen($this->payload);
         }
+
 // Handle HTTP errors
         public function httpError($httpCode) {
                 switch ($httpCode) {
@@ -145,88 +146,18 @@ class interlink {
                         case '503':
                                 throw new Exception('The API being called is temporary out of service');
                                 break;
-            }
-
+			}
                 }
+
 // Handle API errors
         public function apiError($err) {
-                foreach ($err as $i) {
-                        echo 'API Error! Code: ' . $i['errorCode'] . ' Type: ' . $i['errorType'] . ' Message: ' . $i['obj'] . ' ' . $i['errorMessage'] . "\r\n";
-                }
-                throw new Exception('API error');
-
-                //var_dump($err);
+		// Throw first error (cannot throw multi exceptions). Sorry you will have to work through errors one at a time :D
+        	throw new Exception('API Error! Code: ' . $err[0]['errorCode'] . ' Type: ' . $err[0]['errorType'] . ' Message: ' . $err[0]['obj'] . ' / ' . $err[0]['errorMessage']);
         }
 
 // Destruct object
         public function __destruct() {
                 curl_close($this->ch);
-        }
+	}
 }
-
-//EXAMPLE
-
-$test = new interlink("https://api.interlinkexpress.com", "USERNAME", "PASSWORD", "ACC_NO");
-//var_dump($test->getNetcode());
-
-
-//Shipping template
-
-$payload = array( 'job_id' => NULL,
-                  'collectionOnDelivery' => NULL,
-                  'invoice'=> NULL,
-                  'collectionDate' => '2015-6-16T05:00:00',
-                  'consolidate' => NULL,
-                  'consignment' => [[
-                        'consignmentNumber' => NULL,
-                        'consignmentRef' => NULL,
-                        'parcels' => [],
-                        'collectionDetails' => [
-                                'contactDetails' => [
-                                        'contactName' => 'My Contact',
-                                        'telephone' => '0121 500 2500'
-                                ],
-                                'address' => [
-                                        'organisation' => 'GeoPostUK Ltd',
-                                        'countryCode' => 'GB',
-                                        'postcode' => 'B66 1BY',
-                                        'street' => 'Roebuck Lane',
-                                        'locality' => 'Smethwick',
-                                        'town' => 'Birmingham',
-                                        'county' => 'West Midlands'
-                                ]
-                        ],
-                        'deliveryDetails'=> [
-                                'contactDetails'=> [
-                                        'contactName'=> 'My Contact',
-                                        'telephone'=> '0121 500 2500'
-                                ],
-                                'address'=> [
-                                        'organisation'=> 'GeoPostUK Ltd',
-                                        'countryCode'=> 'GB',
-                                        'postcode'=> 'B66 1BY',
-                                        'street'=> 'Roebuck Lane',
-                                        'locality'=> 'Smethwick',
-                                        'town'=> 'Birmingham',
-                                        'county'=> 'West Midlands'
-                                ],
-                                'notificationDetails' => [
-                                        'email'=> 'my.email@geopostuk.com',
-                                        'mobile'=> '07921000001'
-                                ]
-                        ],
-                        'networkCode'=> '2^12',
-                        'numberOfParcels'=> 1,
-                        'totalWeight'=> 5,
-                        'shippingRef1'=> 'My Ref 1',
-                        'shippingRef2'=> 'My Ref 2',
-                        'shippingRef3'=> 'My Ref 3',
-                        'customsValue'=> NULL,
-                        'deliveryInstructions'=> 'Please deliver with neighbour',
-                        'parcelDescription'=> NULL,
-                        'liabilityValue'=> NULL,
-                        'liability'=> NULL
-                        ]]);
-var_dump($test->insertShipping($payload));
 ?>
-

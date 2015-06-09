@@ -1,8 +1,10 @@
-# interlinkexpress-api-class
+## interlinkexpress-api-class
 
 Small PHP class to interface with Geopost/DPD/interlink shipping API
 
-## USAGE:
+Was originally wrote for interlink who only have 6 services running ATM, Geopost / DPD may have more available.
+
+### USAGE:
 
 First create an interlink object using your URL / username / password / account no.
 
@@ -77,6 +79,10 @@ $shippingArray = array( 'job_id' => NULL,
 
 ```
 
-# TODO
+### TODO
 
-Labels !!!
+List of services.
+Get labels.
+Custom requests.
+
+enjoy.
