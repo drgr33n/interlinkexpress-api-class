@@ -1,14 +1,14 @@
-## interlinkexpress-api-class
+# interlinkexpress-api-class
 
 Small PHP class to interface with Geopost/DPD/interlink shipping API
 
-# USAGE:
+## USAGE:
 
 First create an interlink object using your URL / username / password / account no.
 
 $shippingObject = new interlink("URL", "USERNAME", "PASSWORD", "ACC_NO");
 
-Functions working are as follows..
+Functions working are as follows;
 
 listCountry();
 getCountry($countrycode);
@@ -17,7 +17,7 @@ insertShipping($shippingArray)
 
 Shipping data array should be formatted to the following (see example in code)
 
-'''
+```
 $shippingArray = array( 'job_id' => NULL,
                   'collectionOnDelivery' => NULL,
                   'invoice'=> NULL,
@@ -75,7 +75,7 @@ $shippingArray = array( 'job_id' => NULL,
                         ]]);
 
 
-'''
+```
 
 # TODO
 
