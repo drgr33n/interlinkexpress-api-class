@@ -115,8 +115,70 @@ $shippingArray = array( 'job_id' => NULL,
                         'parcelDescription'=> NULL,
                         'liabilityValue'=> NULL,
                         'liability'=> NULL
-                        ]]);
+                        ]]
+		);
 
+```
+
+People are reporting in versions of PHP < 5.6 double brackets are rejected. If thats the case please change to the following;
+
+```
+$shippingArray = array( 'job_id' => NULL,
+                  'collectionOnDelivery' => NULL,
+                  'invoice'=> NULL,
+                  'collectionDate' => '2015-6-4T05:00:00',
+                  'consolidate' => NULL,
+                  'consignment' => array(array(
+                        'consignmentNumber' => NULL,
+                        'consignmentRef' => NULL,
+                        'parcels' => array(),
+                        'collectionDetails' => array(
+                                'contactDetails' => array(
+                                        'contactName' => 'My Contact',
+                                        'telephone' => '0121 500 2500'
+                                ),
+                                'address' => array(
+                                        'organisation' => 'GeoPostUK Ltd',
+                                        'countryCode' => 'GB',
+                                        'postcode' => 'B66 1BY',
+                                        'street' => 'Roebuck Lane',
+                                        'locality' => 'Smethwick',
+                                        'town' => 'Birmingham',
+                                        'county' => 'West Midlands'
+                                )
+                        ),
+                        'deliveryDetails'=> array(
+                                'contactDetails'=> array(
+                                        'contactName'=> 'My Contact',
+                                        'telephone'=> '0121 500 2500'
+                                ),
+                                'address'=> array(
+                                        'organisation'=> 'GeoPostUK Ltd',
+                                        'countryCode'=> 'GB',
+                                        'postcode'=> 'B66 1BY',
+                                        'street'=> 'Roebuck Lane',
+                                        'locality'=> 'Smethwick',
+                                        'town'=> 'Birmingham',
+                                        'county'=> 'West Midlands'
+                                ),
+                                'notificationDetails' => array(
+                                        'email'=> 'my.email@geopostuk.com',
+                                        'mobile'=> '07921000001'
+                                )
+                        ),
+                        'networkCode'=> '2^12',
+                        'numberOfParcels'=> 1,
+                        'totalWeight'=> 5,
+                        'shippingRef1'=> 'My Ref 1',
+                        'shippingRef2'=> 'My Ref 2',
+                        'shippingRef3'=> 'My Ref 3',
+                        'customsValue'=> NULL,
+                        'deliveryInstructions'=> 'Please deliver with neighbour',
+                        'parcelDescription'=> NULL,
+                        'liabilityValue'=> NULL,
+                        'liability'=> NULL
+                        ))
+                );
 
 ```
 
@@ -124,7 +186,7 @@ $shippingArray = array( 'job_id' => NULL,
 
 Allows you to send a custom get request. For example
 
-$str="/services/custom";
+$str="services/custom/string";
 customGet($str);
 
 ### TODO
