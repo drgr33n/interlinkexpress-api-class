@@ -6,7 +6,7 @@
 
 class interlink {
 // Initialize varables
-        private $version = "Interlink express API class v1.0a";
+        private $version = "Interlink express API class v1.0b";
         private $url;
         private $timeout;
         private $ch;
@@ -70,7 +70,23 @@ class interlink {
                 $reqStr="/shipping/country";
                 $query = $this->doQuery($method, $reqStr);
                 return isset($query['error']) ? $this->apiError($query['error']) : $query;
+        }
 
+// Custom Get
+        public function customGet($str) {
+                $method="GET";
+                $query = $this->doQuery($method, $str);
+                return isset($query['error']) ? $this->apiError($query['error']) : $query;
+        }
+
+//Get Shipping
+        public function getShipping($data) {
+                $method="GET";
+		// Needs cleaning up but regex is like Chinese to me !
+		$data = str_replace('%5D', '', str_replace('%5B', '.', http_build_query($data)));
+                $reqStr="/shipping/network/?" . $data;
+                $query = $this->doQuery($method, $reqStr);
+                return isset($query['error']) ? $this->apiError($query['error']) : $query;
         }
 
 // Get country
@@ -82,9 +98,9 @@ class interlink {
         }
 
 //Get Network Code
-        public function getNetcode() {
+        public function getNetcode($geoCode) {
                 $method="GET";
-                $reqStr="/shipping/network/812/";
+                $reqStr="/shipping/network/" . $geoCode;
                 $query = $this->doQuery($method, $reqStr);
                 return isset($query['error']) ? $this->apiError($query['error']) : $query;
         }
@@ -151,8 +167,12 @@ class interlink {
 
 // Handle API errors
         public function apiError($err) {
-		// Throw first error (cannot throw multi exceptions). Sorry you will have to work through errors one at a time :D
-        	throw new Exception('API Error! Code: ' . $err[0]['errorCode'] . ' Type: ' . $err[0]['errorType'] . ' Message: ' . $err[0]['obj'] . ' / ' . $err[0]['errorMessage']);
+		// Probably not the ideal sollution but works and I'm not really a PHP dev. Please clean me !! :D
+		if (isset($err[0])) {
+        		throw new Exception('API Error! Code: ' . $err[0]['errorCode'] . ' Type: ' . $err[0]['errorType'] . ' Message: ' . $err[0]['obj'] . ' / ' . $err[0]['errorMessage']);
+		} else {
+			throw new Exception('API Error! Code: ' . $err['errorCode'] . ' Type: ' . $err['errorType'] . ' Message: ' . $err['obj'] . ' / ' . $err['errorMessage']);
+		}
         }
 
 // Destruct object
@@ -160,4 +180,5 @@ class interlink {
                 curl_close($this->ch);
 	}
 }
+
 ?>

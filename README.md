@@ -12,12 +12,53 @@ $shippingObject = new interlink("URL", "USERNAME", "PASSWORD", "ACC_NO");
 
 Functions working are as follows;
 
-listCountry();
-getCountry($countrycode);
-getNetcode();
-insertShipping($shippingArray)
+####getShipping($dataArray);
 
-Shipping data array should be formatted to the following (see example in code)
+Get shipping returns a list of available services based on your account & collection / delivery data. Array format is as follows;
+
+```
+$dataArray = array(
+        'collectionDetails' => [
+                'address' => [
+                        'locality' => 'Birmingham',
+                        'county' => 'West Midlands',
+                        'ostcode' => 'B661BY',
+                        'countryCode' => 'GB'
+                ],
+        ],
+        'deliveryDetails' => [
+                'address' => [
+                        'locality' => 'Birmingham',
+                        'county' => 'West Midlands',
+                        'postcode' => 'B11AA',
+                        'countryCode' => 'GB'
+                ],
+        ],
+        'deliveryDirection' => 1,
+        'numberOfParcels' => 1,
+        'totalWeight' => 5,
+        'shipmentType' => 0
+        );
+```
+
+####listCountry();
+
+Provides a full list of available shipping countries.
+
+
+####getCountry($countrycode);
+
+This function brings back the country details for a provided country code and can be used to determine if a
+country requires a postcode or if liability is allowed.
+
+####getNetcode($geoCode);
+
+Retrieves the supported countries for a geoServiceCode.
+
+
+####insertShipping($shippingArray);
+
+Function to insert shipping into your account. Please refer to your API guide for more info. Shipping data array should be formatted to the following;
 
 ```
 $shippingArray = array( 'job_id' => NULL,
@@ -37,8 +78,8 @@ $shippingArray = array( 'job_id' => NULL,
                                 'address' => [
                                         'organisation' => 'GeoPostUK Ltd',
                                         'countryCode' => 'GB',
-                                        //'postcode' => 'B66 1BY',
-                                        //'street' => 'Roebuck Lane',
+                                        'postcode' => 'B66 1BY',
+                                        'street' => 'Roebuck Lane',
                                         'locality' => 'Smethwick',
                                         'town' => 'Birmingham',
                                         'county' => 'West Midlands'
@@ -52,8 +93,8 @@ $shippingArray = array( 'job_id' => NULL,
                                 'address'=> [
                                         'organisation'=> 'GeoPostUK Ltd',
                                         'countryCode'=> 'GB',
-                                        //'postcode'=> 'B66 1BY',
-                                        //'street'=> 'Roebuck Lane',
+                                        'postcode'=> 'B66 1BY',
+                                        'street'=> 'Roebuck Lane',
                                         'locality'=> 'Smethwick',
                                         'town'=> 'Birmingham',
                                         'county'=> 'West Midlands'
@@ -79,10 +120,15 @@ $shippingArray = array( 'job_id' => NULL,
 
 ```
 
+####customGet($str);
+
+Allows you to send a custom get request. For example
+
+$str="/services/custom";
+customGet($str);
+
 ### TODO
 
-List of services.
 Get labels.
-Custom requests.
 
 enjoy.
