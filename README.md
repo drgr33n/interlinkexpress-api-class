@@ -189,8 +189,12 @@ Allows you to send a custom get request. For example
 $str="services/custom/string";
 customGet($str);
 
-### TODO
+####getLabel($shippmentId, $returnFormat);
 
-Get labels.
+Returns printer data for printing labels. I don't know how this all works, but I do know it returns printer data :P Return format oprions are as follows;
+
+text/html
+text/vnd.eltron-epl
+text/vnd.citizen-clp
 
 enjoy.

@@ -6,7 +6,7 @@
 
 class interlink {
 // Initialize varables
-        private $version = "Interlink express API class v1.0b";
+        private $version = "Interlink express API class v1.0c";
         private $url;
         private $timeout;
         private $ch;
@@ -15,6 +15,9 @@ class interlink {
         private $password;
         private $accountNo;
         private $jsonSize = 0;
+	private $returnFormat = 'application/json';
+	private $contentType = 'none';
+	private $isPrintjob = 0;
 
 // Construct object
         public function __construct($url, $username, $password, $accountNo) {
@@ -27,7 +30,7 @@ class interlink {
 
 // Do authentication
         private function authenticate($timeout='5', $headers=array()) {
-                $headers = array( 'Content-Type: application/json',
+                $headers = array( 'Content-Type: None',
                                         'Accept: application/json',
                                         'Authorization: Basic ' . base64_encode($this->username . ':' . $this->password),
                                         'GEOClient: ' . $this->username . '/' . $this->accountNo,
@@ -56,8 +59,8 @@ class interlink {
 // Construct headers for data transfer
         private function constructHeaders($headers=array()) {
                 $authToken = $this->authenticate();
-                $this->headers = array( 'Content-Type: application/json',
-                                        'Accept: application/json',
+                $this->headers = array( 'Content-Type: ' . $this->contentType,
+                                        'Accept: ' . $this->returnFormat,
                                         'GEOClient: ' . $this->username . '/' . $this->accountNo,
                                         'GEOSession: ' . $authToken,
                                         'Content-Length: ' . $this->jsonSize
@@ -110,6 +113,18 @@ class interlink {
                 $method="POST";
                 $reqStr="/shipping/shipment";
                 $this->encodePayload($payload);
+		$this->contentType = 'application/json';
+                $query = $this->doQuery($method, $reqStr);
+                return isset($query['error']) ? $this->apiError($query['error']) : $query;
+        }
+
+//Get Label
+        public function getLabel($shipmentId, $dataType) {
+                $method="GET";
+		$this->returnFormat = $dataType;
+                $reqStr="/shipping/shipment/" . $shipmentId . "/label/";
+		$this->isPrintjob = 1;
+                $this->contentType = 'Accept';
                 $query = $this->doQuery($method, $reqStr);
                 return isset($query['error']) ? $this->apiError($query['error']) : $query;
         }
@@ -128,13 +143,18 @@ class interlink {
                         ));
                 $data = curl_exec($this->ch);
                 $httpCode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
-                $response = json_decode($data, true);
+		//If print job don't decode.
+		if ($this->isPrintjob == 0) {
+			$response = json_decode($data, true);
+		} else {
+			$response = $data;
+		}
                 if (curl_errno($this->ch)) {
                         throw new Exception('Error connecting to API: ' . curl_error($this->ch));
                 } elseif ($httpCode === 401 || $httpCode === 403 || $httpCode === 404 || $httpCode === 500 || $httpCode === 503) {
                         $this->httpError($httpCode);
                 } else {
-                        return (is_array($response) ? $response : array());
+                        return $response;
                 }
         }
 
